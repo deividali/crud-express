@@ -19,7 +19,8 @@ const pool = mysql.createPool({
 });
 
 
-//consultar base de datos
+// Solicitud tipo get a la base de datos (SELECT)
+// Para leer el contenido de la lista "todo" 
 app.get("/todos",async(req,res)=>{
     try {
         const [rows] = await pool.query("SELECT * FROM todo")
@@ -30,11 +31,11 @@ app.get("/todos",async(req,res)=>{
         res.status(500).send("error al obtener las tareas")
     }
 });
-//agregar datos a la base de datos
+// Solicitud tipo POST agregar informacion a la base de datos (INSERT)
 app.post("/todos",async(req,res)=>{
-    const {text} = req.body;
+    const {tarea} = req.body;
     try {
-        const [result] = await pool.query("INSERT INTO todo(tarea,completed) VALUES(?,?)",[text, false])
+        const [result] = await pool.query("INSERT INTO todo(tarea,completed) VALUES(?,?)",[tarea, false])
         //const [result] = await pool.query(`INSERT INTO todo(text,completed) VALUE(${text},${false})`) // es una forma insegura de insertar datos
         res.json({id:result.insertId})
     } catch (error) {
@@ -47,10 +48,10 @@ app.post("/todos",async(req,res)=>{
 app.put("/todos/:id",async(req,res)=>{
     const {id} = req.params;
     const {tarea, completed} = req.body;
-
+    console.log("Se ingresa a solicitud PUT",id,tarea,completed)
     try {
         if(tarea != undefined){
-            await pool.query("UPDATE todo SET completed = ? WHERE ID = ?", [completed,id])
+            await pool.query("UPDATE todo SET completed = ? WHERE id = ?", [completed,id])
             res.json({message:"tarea actualizada correctamente"});
         }
     } catch (error) {
@@ -66,7 +67,7 @@ app.delete("/todos/:id",async(req,res)=>{
     const {id} = req.params;
 
     try {
-        await pool.query("DELETE FROM todo WHERE ID = ?",[id])
+        await pool.query("DELETE FROM todo WHERE id = ?",[id])
         res.json({message:"tarea eliminada"})
     } catch (error) {
         console.log("error",error);
