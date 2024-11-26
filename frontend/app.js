@@ -1,3 +1,4 @@
+
 const API_URL = "http://localhost:5000/todos"
 
 // iniciar la aplicacion 
@@ -72,7 +73,7 @@ document.querySelector("#todo-list").addEventListener("click",(e)=>{
         const todoText = document.querySelector(`.todo-tarea[data-id="${id}"]`)
         const newText = prompt("editar tarea:",todoText.textContent)
         console.log(newText)
-        if((newText&&newText.trim())!==""){
+        if(newText&&newText.trim()!==""){
             console.log("condicion valida")
             updateTodoText(id,newText.trim())
         }
@@ -89,12 +90,13 @@ document.querySelector("#todo-list").addEventListener("click",(e)=>{
 async function updateTodoText(id,newText) {
     console.log("Se ingresa a funcion updateTodoText",id,newText)
     try {
-        await fetch(`${API_URL}/${id}`,{            
+        const response = await fetch(`${API_URL}/${id}`,{            
             method: "PUT",
             headers: {"content-type":"application/json"},
-            body: JSON.stringify({tarea:newText})
+            body: JSON.stringify({"tarea":newText})
         })
-        console.log("salgo de fetch")
+        await response.json();
+        console.log(response)
         fetchTodos();
     } catch (error) {
         console.log("Error al actualizar el texto: ", error)

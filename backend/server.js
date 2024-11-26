@@ -47,11 +47,11 @@ app.post("/todos",async(req,res)=>{
 
 app.put("/todos/:id",async(req,res)=>{
     const {id} = req.params;
-    const {tarea, completed} = req.body;
-    console.log("Se ingresa a solicitud PUT",id,tarea,completed)
+    const {tarea} = req.body;
+    console.log("Se ingresa a solicitud PUT",id,tarea)
     try {
         if(tarea != undefined){
-            await pool.query("UPDATE todo SET completed = ? WHERE id = ?", [completed,id])
+            await pool.query("UPDATE todo SET tarea = ? WHERE id = ?", [tarea,id])
             res.json({message:"tarea actualizada correctamente"});
         }
     } catch (error) {
